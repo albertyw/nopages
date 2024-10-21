@@ -1,0 +1,28 @@
+/* Base-Flask */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+#main a:visited {
+    color: revert;
+}
+
+body {
+    margin-bottom: 150px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    padding-top: 50px;
+    height: 150px;
+}
+
+/* Overrides */

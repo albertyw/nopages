@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    {# Language #}
+    <meta charset="utf-8">
+    <meta name="Description" content="{% block description %}{% endblock %}">
+    <title>{% block title %}{% endblock %}</title>
+
+    {# Style #}
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='gen/main.css') }}" />
+
+    {# Favicon #}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='img/favicon/manifest.json') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+
+    {# Facebook Meta Tags #}
+    <meta property="og:url" content="{# TODO #}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{# TODO #}">
+    <meta property="og:description" content="{# TODO #}">
+    <meta property="og:image" content="{# TODO #}/static/img/favicon/android-chrome-512x512.png">
+
+    {# Twitter Meta Tags #}
+    <meta name="twitter:card" content="summary">
+    <meta property="twitter:domain" content="$HOSTNAME">
+    <meta property="twitter:url" content="{# TODO #}">
+    <meta name="twitter:title" content="{# TODO #}">
+    <meta name="twitter:description" content="{# TODO #}">
+    <meta name="twitter:image" content="{# TODO #}/static/img/favicon/android-chrome-512x512.png">
+
+    {# External Dependencies #}
+    <meta name="google-site-verification" content="" />
+    <link rel="preconnect" href="https://www.google-analytics.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://ingest.log.fit">
+    <link rel="preconnect" href="https://www.varsnap.com">
+
+    {# Miscellaneous #}
+    <link type="text/plain" rel="author" href="{{ url_for('humans', _external=True) }}" />
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand mb-0 h1" href="#">TITLE</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Page 1</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Page 2</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div id="main">
+        {% block content %}{% endblock %}
+      </div>
+      <footer id="footer">
+        {% block footer %}
+        FOOTER
+        {% endblock %}
+      </footer>
+    </div>
+    <script src="{{ url_for('static', filename='gen/main.js') }}"></script>
+  </body>
+</html>

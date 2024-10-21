@@ -1,0 +1,99 @@
+kind: pipeline
+type: docker
+name: test
+
+steps:
+  - name: Test Python
+    image: python:3.13-slim-bookworm
+    commands:
+      - apt-get update && apt-get install -y curl git
+      - ln -fs .env.development .env
+      - pip install -e .[test]
+      - curl -L "https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-$(dpkg --print-architecture)" > "${HOME}/bin/cc-test-reporter"
+      - chmod +x "${HOME}/bin/cc-test-reporter"
+      - ruff check .
+      - gunicorn -c config/gunicorn.conf.py --check-config
+      - mypy .
+      - cc-test-reporter before-build
+      - coverage run -m unittest discover
+      - exitcode="$?"
+      - coverage report -m
+      - coverage xml -i
+      - cc-test-reporter after-build --exit-code "$exitcode"
+    environment:
+      CC_TEST_REPORTER_ID: e42a05bff9c04dc4688b42419421a047b4d9c943f1734bc2f3180a7d2dae8f4f
+
+  - name: Test Node
+    image: satantime/puppeteer-node:22-bookworm-slim
+    commands:
+      - ln -fs .env.development .env
+      - npm ci
+      - npm test
+
+  - name: Test Bash
+    image: koalaman/shellcheck-alpine:stable
+    commands:
+      - ln -fs .env.development .env
+      - shellcheck -x bin/*.sh
+
+  - name: Test Dockerfile
+    image: hadolint/hadolint:latest-alpine
+    commands:
+      - hadolint Dockerfile --ignore=DL3008 --ignore=SC2046 --ignore=SC2006
+
+  - name: Test Nginx
+    image: python:3.12-alpine
+    commands:
+      - pip install gixy==0.1.21
+      - gixy config/nginx/*
+
+  - name: Build Docker Container
+    depends_on:
+      - Test Dockerfile
+    image: plugins/docker:20
+    settings:
+      repo: base-flask
+      tags: test
+      dry_run: true
+
+  #- name: Deploy
+  #  depends_on:
+  #    - Build Docker Container
+  #  environment:
+  #    SSH_KEY:
+  #      from_secret: ssh_key
+  #  image: albertyw/ssh-client:4.1.1
+  #  commands:
+  #    - ssh-keyscan $HOSTNAME >> /root/.ssh/known_hosts
+  #    - echo "$${SSH_KEY}" > /root/.ssh/id_ed25519
+  #    - chmod 600 /root/.ssh/id_ed25519
+  #    - ssh USERNAME@$HOSTNAME $REPO_PATH/bin/deploy.sh master
+  #  when:
+  #    branch:
+  #      - master
+
+trigger:
+  event:
+    exclude:
+      - cron
+
+---
+kind: pipeline
+type: docker
+name: refresh-varsnap-production-snaps
+steps:
+  - name: Refresh Varsnap Python Production Snaps
+    image: python:3.13-slim-bookworm
+    commands:
+      - ln -fs .env.development .env
+      - pip install -e .[test]
+      - python baseflask/refresh_varsnap.py
+  - name: Refresh Varsnap Javascript Production Snaps
+    image: satantime/puppeteer-node:22-bookworm-slim
+    commands:
+      - ln -fs .env.development .env
+      - npm ci
+      - node baseflask/refresh-varsnap.js
+trigger:
+  cron:
+    - refresh-varsnap-production-snaps
