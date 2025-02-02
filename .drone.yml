@@ -49,6 +49,10 @@ steps:
 
   - name: Build Docker Container
     depends_on:
+      - Test Python
+      - Test Node
+      - Test Bash
+      - Test Nginx
       - Test Dockerfile
     image: plugins/docker:20
     settings:
