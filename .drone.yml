@@ -6,32 +6,33 @@ steps:
   - name: Test Python
     image: python:3.13-slim-bookworm
     commands:
-      - apt-get update && apt-get install -y curl git
+      - apt-get update && apt-get install -y curl git xz-utils
+      - curl https://qlty.sh | sh
       - ln -fs .env.development .env
       - pip install -e .[test]
-      - curl -L "https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-$(dpkg --print-architecture)" > "${HOME}/bin/cc-test-reporter"
-      - chmod +x "${HOME}/bin/cc-test-reporter"
       - ruff check .
       - gunicorn -c config/gunicorn.conf.py --check-config
       - mypy .
-      - cc-test-reporter before-build
       - coverage run -m unittest discover
-      - exitcode="$?"
       - coverage report -m
-      - coverage xml -i
-      - cc-test-reporter after-build --exit-code "$exitcode"
+      - coverage lcov -o .coverage.lcov
+      - ~/.qlty/bin/qlty coverage publish .coverage.lcov --override-commit-sha "$DRONE_COMMIT_SHA" --override-branch "$DRONE_BRANCH" --override-build-id "$DRONE_BUILD_NUMBER"
     environment:
-      CC_TEST_REPORTER_ID: e42a05bff9c04dc4688b42419421a047b4d9c943f1734bc2f3180a7d2dae8f4f
+      QLTY_COVERAGE_TOKEN: qltcp_zVCcWJ2cI71xV60s
 
   - name: Test Node
     image: satantime/puppeteer-node:24-bookworm-slim
     commands:
+      - apt-get update && apt-get install -y curl
+      - curl https://qlty.sh | sh
       - ln -fs .env.development .env
       - npm ci
       - npm test
+      - ~/.qlty/bin/qlty coverage publish .coverage_js/clover.xml --override-commit-sha "$DRONE_COMMIT_SHA" --override-branch "$DRONE_BRANCH" --override-build-id "$DRONE_BUILD_NUMBER"
     environment:
       GIT_VERSION: ${DRONE_COMMIT}
       GIT_BRANCH: ${DRONE_BRANCH}
+      QLTY_COVERAGE_TOKEN: qltcp_zVCcWJ2cI71xV60s
 
   - name: Test Bash
     image: koalaman/shellcheck-alpine:stable
@@ -56,7 +57,7 @@ steps:
       - Test Bash
       - Test Nginx
       - Test Dockerfile
-    image: plugins/docker:20
+    image: plugins/docker:21
     settings:
       repo: base-flask
       tags: test
@@ -73,7 +74,7 @@ steps:
   #  environment:
   #    SSH_KEY:
   #      from_secret: ssh_key
-  #  image: albertyw/ssh-client:4.1.8
+  #  image: albertyw/ssh-client:4.1.9
   #  commands:
   #    - ssh-keyscan $HOSTNAME >> /root/.ssh/known_hosts
   #    - echo "$${SSH_KEY}" > /root/.ssh/id_ed25519
