@@ -8,8 +8,8 @@ IFS=$'\n\t'
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd "$DIR"/.. || exit 1
 
-CONTAINER="$PROJECT_NAME"
-PORT="$INTERNAL_PORT"
+CONTAINER="nopages"
+PORT="5000"
 NETWORK="$CONTAINER"_net
 DEPLOY_BRANCH="${1:-}"
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -55,6 +55,6 @@ if [ "$ENV" = "production" ]; then
     fi
 
     # Update nginx
-    sudo cp "$HOME/$PROJECT_NAME/config/nginx/app" "/etc/nginx/sites-enabled/$PROJECT_NAME-app"
+    sudo cp "$HOME/nopages/config/nginx/app" "/etc/nginx/sites-enabled/nopages-app"
     docker exec nginx /etc/init.d/nginx reload
 fi

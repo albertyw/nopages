@@ -1,4 +1,4 @@
-Contact: mailto:security@$HOSTNAME
+Contact: mailto:security@nopages.net
 Expires: 2030-01-01T08:00:00.000Z
 Preferred-Languages: en
-Canonical: https://www.$HOSTNAME/.well-known/security.txt
+Canonical: https://www.nopages.net/.well-known/security.txt
