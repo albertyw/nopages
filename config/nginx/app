@@ -23,7 +23,7 @@ server {
 ### Servers ###
 
 server {
-    listen          443 ssl default_server;
+    listen          443 ssl;
     http2           on;
     server_name     www.nopages.net;
     access_log      /var/log/nginx/nopages/nopages.access.log;
@@ -43,7 +43,7 @@ server {
 
     location /static/ {
         include          snippets/headers.conf;
-        alias            nopages/static/mount/;
+        alias            /home/albertyw/nopages/static/mount/;
         add_header       'Access-Control-Allow-Origin'   'https://www.nopages.net';
         add_header       'Access-Control-Allow-Methods'  'GET, HEAD, OPTIONS';
         add_header       'Access-Control-Allow-Headers'  'range';
