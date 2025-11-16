@@ -14,7 +14,7 @@ No page breaks in Google Docs
 Using [python venv](https://docs.python.org/3/library/venv.html)
 
 ```bash
-python3.13 -m venv env
+python3.14 -m venv env
 pip install -e .[test]
 ln -s .env.development .env
 npm install
@@ -43,7 +43,7 @@ This repo uses:
 
 ```bash
 # Setup
-pyenv local 3.13
+pyenv local 3.14
 pip install -e .[test]
 ln -s .env.development .env
 
