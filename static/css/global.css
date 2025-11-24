@@ -26,11 +26,11 @@ img {
 }
 
 /* Overrides */
-body {
+#main {
     margin-top: 50px;
 }
 
-#pageless_image {
+#pageless-image {
   width: 400px;
   max-width: 90%;
   margin: 20px auto;
