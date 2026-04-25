@@ -1,5 +1,5 @@
 [project]
-name = "base-flask"
+name = "nopages"
 version = "1.0.0"
 dependencies = [
     # Core packages
